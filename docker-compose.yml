@@ -1,0 +1,34 @@
+version: '2.4'
+services:
+  v2b-redis:
+    image: redis:latest
+    restart: always
+    container_name: v2b-redis
+
+  v2b-db:
+    image: mysql:5.7
+    restart: always
+    container_name: v2b-db
+    environment:
+      - MYSQL_DATABASE=v2b
+      - MYSQL_ROOT_PASSWORD=example
+    volumes:
+      - /root/v2b-db:/var/lib/mysql
+
+  v2b-main:
+    image: zhouweitong/v2board:latest
+    restart: always
+    container_name: v2b-main
+    links:
+      - v2b-redis
+      - v2b-db
+    volumes:
+      - v2board_config:/var/www/html/config/theme
+      - apache_config:/etc/apache2
+    ports:
+      - 8000:80
+ 
+volumes:
+  v2board_config: {}
+  apache_config: {}
+  
